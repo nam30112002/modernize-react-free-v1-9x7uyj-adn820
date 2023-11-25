@@ -5,24 +5,50 @@ import { Button } from '@mui/material';
 import Cookies from 'js-cookie';
 
 export default function CreateParkingLots() {
-    const [licensePlate, setLicensePlate] = useState("");
-    const [vehicleType, setVehicleType] = useState("");
+    const [name, setName] = useState();
+    const [longitude, setLongitude] = useState();
+    const [latitude, setLatitude] = useState();
+    const [carSlot, setCarSlot] = useState();
+    const [motorbikeSlot, setMotorBikeSlot] = useState();
+    const [bicycleSlot, setBicyleSlot] = useState();
 
-    const changeLicensePlate = (event) => {
+    const changeName = (event) => {
         console.log(event.target.value);
-        setLicensePlate(event.target.value);
+        setName(event.target.value);
     }
 
-    const changeVehicleType = (event) => {
-        setVehicleType(event.target.value);
+    const changeLongitude = (event) => {
+        setLongitude(event.target.value);
     }
 
-    const registerVehicle = () => {
+    const changeLatitude = (event) => {
+        setLatitude(event.target.value);
+    }
+
+    const changeCarSlot = (event) => {
+        setCarSlot(event.target.value);
+    }
+
+    const changeMotorbikeSlot = (event) => {
+        setMotorBikeSlot(event.target.value);
+    }
+
+    const changeBicycleSlot = (event) => {
+        setBicyleSlot(event.target.value);
+    }
+
+    const registerParkingLot = () => {
         let accessToken = Cookies.get('accessToken');
         let data = JSON.stringify({
-            "license_plate" : licensePlate,
-            "vehicle_type" : vehicleType
-        });
+            "name": name,
+            "longitude": longitude,
+            "latitude": latitude,
+            "available_spaces": {
+              "car": carSlot,
+              "motorbike": motorbikeSlot,
+              "bicycle": bicycleSlot
+            }
+          });
         console.log(data);
         var myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
@@ -34,7 +60,7 @@ export default function CreateParkingLots() {
             redirect: 'follow'
         };
 
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/`, requestOptions)
+        fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/`, requestOptions)
             .then((response) => {
                 console.log('Response:', response);
             });
@@ -51,9 +77,13 @@ export default function CreateParkingLots() {
                 noValidate
                 autoComplete="off"
             >
-                <TextField id="standard-basic" label="Biển số xe" variant="standard" onChange={changeLicensePlate}/>
-                <TextField id="standard-basic" label="Loại xe" variant="standard" onChange={changeVehicleType}/>
-                <Button variant="contained" onClick={registerVehicle}>
+                <TextField id="standard-basic" label="Tên bãi đỗ xe" variant="standard" onChange={changeName}/>
+                <TextField id="standard-basic" label="Longitude" variant="standard" onChange={changeLongitude}/>
+                <TextField id="standard-basic" label="Latitude" variant="standard" onChange={changeLatitude}/>
+                <TextField id="standard-basic" label="Slot trống ô tô" variant="standard" onChange={changeCarSlot}/>
+                <TextField id="standard-basic" label="Slot trống xe máy" variant="standard" onChange={changeMotorbikeSlot}/>
+                <TextField id="standard-basic" label="Slot trống xe đạp" variant="standard" onChange={changeBicycleSlot}/>
+                <Button variant="contained" onClick={registerParkingLot}>
                     Register
                 </Button>
             </Box>
