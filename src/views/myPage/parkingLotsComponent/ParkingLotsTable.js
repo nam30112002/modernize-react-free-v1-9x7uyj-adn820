@@ -84,7 +84,7 @@ export default function ParkingLotsTable() {
     }, [timeLoad, page, rowsPerPage]);
 
 
-    const deleteVehicle = (id) => {
+    const deleteParkingLots = (id) => {
         let accessToken = Cookies.get('accessToken');
         var myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
@@ -94,7 +94,7 @@ export default function ParkingLotsTable() {
             redirect: 'follow'
         };
 
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/` + id, requestOptions)
+        fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/` + id, requestOptions)
             .then((response) => {
                 console.log('Response:', response);
                 setTimeLoad(timeLoad+1);
@@ -141,7 +141,7 @@ export default function ParkingLotsTable() {
                                 {row.available_spaces.bicycle}
                             </TableCell>
                             <TableCell>
-                                <IconButton>
+                                <IconButton onClick={() => deleteParkingLots(row.id)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </TableCell>
