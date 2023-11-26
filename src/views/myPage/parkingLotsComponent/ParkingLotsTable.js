@@ -19,6 +19,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import DeleteIcon from '@mui/icons-material/Delete';
+import BuildIcon from '@mui/icons-material/Build';
+import UpdateParkingLotsForm from './UpdateParkingLotsForm';
+import {useDispatch} from "react-redux";
+import {updatePL} from "../../../store/UpdatePLSlice";
 
 export default function ParkingLotsTable() {
     const [page, setPage] = useState(0);
@@ -27,6 +31,10 @@ export default function ParkingLotsTable() {
     const [numberOfTotalRow, setNumberOfTotalRow] = useState(0);
     const [numberOfTotalPage, setNumberOfTotalPage] = useState(0);
     const [timeLoad, setTimeLoad] = useState(1);
+    const [isOpenForm, setIsOpenForm] = useState(false);
+    const [idUpdate, setIdUpdate] = useState(0);
+    const [dataUpdate, setDataUpdate] = useState();
+
     //Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
         page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0;
@@ -60,9 +68,9 @@ export default function ParkingLotsTable() {
 
     useEffect(() => {
         let accessToken = Cookies.get('accessToken');
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        var requestOptions = {
+        let requestOptions = {
             method: 'GET',
             headers: myHeaders,
             redirect: 'follow'
@@ -81,14 +89,14 @@ export default function ParkingLotsTable() {
                 }
             })
             .catch(error => console.log('error', error));
-    }, [timeLoad, page, rowsPerPage]);
+    }, [timeLoad, page, rowsPerPage, idUpdate, dataUpdate, isOpenForm]);
 
 
     const deleteParkingLots = (id) => {
         let accessToken = Cookies.get('accessToken');
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        var requestOptions = {
+        let requestOptions = {
             method: 'DELETE',
             headers: myHeaders,
             redirect: 'follow'
@@ -101,6 +109,36 @@ export default function ParkingLotsTable() {
             });
     }
 
+    const closeForm = () => {
+        setIsOpenForm(false);
+    }
+
+    const openForm = (id) => {
+        setIdUpdate(id);
+        let accessToken = Cookies.get('accessToken');
+        let myHeaders = new Headers();
+        myHeaders.append('Authorization', 'Bearer ' + accessToken);
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/${id}`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                try {
+                    console.log(result);
+                    setDataUpdate(result);
+                    setTimeLoad(timeLoad+1);
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                }
+            })
+            .catch(error => console.log('error', error));
+        console.log(idUpdate);
+        setIsOpenForm(true);
+    }
 
     return (
         <TableContainer component={Paper}>
@@ -143,6 +181,11 @@ export default function ParkingLotsTable() {
                             <TableCell>
                                 <IconButton onClick={() => deleteParkingLots(row.id)}>
                                     <DeleteIcon />
+                                </IconButton>
+                            </TableCell>
+                            <TableCell>
+                                <IconButton onClick={() => openForm(row.id)}>
+                                    <BuildIcon />
                                 </IconButton>
                             </TableCell>
                         </TableRow>
@@ -188,6 +231,8 @@ export default function ParkingLotsTable() {
                     </TableRow>
                 </TableFooter>
             </Table>
+            <UpdateParkingLotsForm open={isOpenForm} close={closeForm} idUpdate = {idUpdate} dataUpdate = {dataUpdate}/>
+            
         </TableContainer>
     );
 }
