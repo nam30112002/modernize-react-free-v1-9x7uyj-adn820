@@ -19,8 +19,6 @@ import Select from '@mui/material/Select';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BuildIcon from '@mui/icons-material/Build';
 import UpdateParkingLotsForm from './UpdateParkingLotsForm';
-import {useDispatch} from "react-redux";
-import {updatePL} from "../../../store/UpdatePLSlice";
 
 export default function ParkingLotsTable({ 
     page, 

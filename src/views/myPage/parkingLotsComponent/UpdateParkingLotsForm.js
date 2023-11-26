@@ -7,8 +7,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Cookies from 'js-cookie';
-import {useSelector} from "react-redux";
-import {selectIdPL} from "../../../store/UpdatePLSlice";
 
 export default function UpdateParkingLotsForm({
     open,
