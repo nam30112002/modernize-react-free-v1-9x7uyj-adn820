@@ -2,8 +2,7 @@ import React from 'react';
 import { Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
-import ParkingLotsTable from "./parkingLotsComponent/ParkingLotsTable";
-import CreateParkingLots from './parkingLotsComponent/CreateParkingLots';
+import ParkingLotsParent from "./parkingLotsComponent/ParkingLotsParent";
 
 
 const ParkingLots = () => {
@@ -12,8 +11,7 @@ const ParkingLots = () => {
 
       <DashboardCard title="Sample Page">
         <Typography>This is a sample page</Typography>
-          <CreateParkingLots/>
-          <ParkingLotsTable/>
+          <ParkingLotsParent/>
       </DashboardCard>
     </PageContainer>
   );
