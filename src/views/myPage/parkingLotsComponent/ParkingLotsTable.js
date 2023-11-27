@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,8 +8,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import TableHead from '@mui/material/TableHead';
-import { useState, useEffect } from "react";
-import Cookies from 'js-cookie';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -21,122 +19,32 @@ import Select from '@mui/material/Select';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BuildIcon from '@mui/icons-material/Build';
 import UpdateParkingLotsForm from './UpdateParkingLotsForm';
-import {useDispatch} from "react-redux";
-import {updatePL} from "../../../store/UpdatePLSlice";
 
-export default function ParkingLotsTable() {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [rows, setRows] = useState([]);
-    const [numberOfTotalRow, setNumberOfTotalRow] = useState(0);
-    const [numberOfTotalPage, setNumberOfTotalPage] = useState(0);
-    const [timeLoad, setTimeLoad] = useState(1);
+export default function ParkingLotsTable({ 
+    page, 
+    rowsPerPage, 
+    rows,
+    handleChangeRowsPerPage,
+    moveFirstPage,
+    moveLastPage,
+    moveBeforePage,
+    moveNextPage,
+    deleteParkingLots,
+    onUpdateParkingLot
+}) {
     const [isOpenForm, setIsOpenForm] = useState(false);
-    const [idUpdate, setIdUpdate] = useState(0);
-    const [dataUpdate, setDataUpdate] = useState();
+    const [updateParkingLot, setUpdateParkingLot] = useState(undefined);
 
-    //Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0;
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(event.target.value);
-        setPage(0);
-    };
-
-    const moveFirstPage = () => {
-        setPage(0);
-        setTimeLoad(timeLoad+1);
-    }
-
-    const moveLastPage = () => {
-        setPage(numberOfTotalPage-1);
-        setTimeLoad(timeLoad+1);
-    }
-
-    const moveBeforePage = () => {
-        setPage(Math.max(page-1,0));
-        setTimeLoad(timeLoad+1);
-    }
-
-    const moveNextPage = () => {
-        let x = Math.min(page+1,numberOfTotalPage-1);
-        console.log(x);
-        setPage(x);
-        setTimeLoad(timeLoad+1);
-    }
-
-    useEffect(() => {
-        let accessToken = Cookies.get('accessToken');
-        let myHeaders = new Headers();
-        myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        let requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                try {
-                    console.log(result);
-                    setRows(result.items);
-                    setNumberOfTotalPage(result.pages);
-                    setNumberOfTotalRow(result.total);
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            })
-            .catch(error => console.log('error', error));
-    }, [timeLoad, page, rowsPerPage, idUpdate, dataUpdate, isOpenForm]);
-
-
-    const deleteParkingLots = (id) => {
-        let accessToken = Cookies.get('accessToken');
-        let myHeaders = new Headers();
-        myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        let requestOptions = {
-            method: 'DELETE',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/` + id, requestOptions)
-            .then((response) => {
-                console.log('Response:', response);
-                setTimeLoad(timeLoad+1);
-            });
-    }
 
     const closeForm = () => {
         setIsOpenForm(false);
+        setUpdateParkingLot(undefined);
     }
 
-    const openForm = (id) => {
-        setIdUpdate(id);
-        let accessToken = Cookies.get('accessToken');
-        let myHeaders = new Headers();
-        myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        let requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/${id}`, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                try {
-                    console.log(result);
-                    setDataUpdate(result);
-                    setTimeLoad(timeLoad+1);
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            })
-            .catch(error => console.log('error', error));
-        console.log(idUpdate);
+    const openForm = (row) => {
+        setUpdateParkingLot(row);
         setIsOpenForm(true);
     }
 
@@ -184,7 +92,7 @@ export default function ParkingLotsTable() {
                                 </IconButton>
                             </TableCell>
                             <TableCell>
-                                <IconButton onClick={() => openForm(row.id)}>
+                                <IconButton onClick={() => openForm(row)}>
                                     <BuildIcon />
                                 </IconButton>
                             </TableCell>
@@ -231,7 +139,7 @@ export default function ParkingLotsTable() {
                     </TableRow>
                 </TableFooter>
             </Table>
-            <UpdateParkingLotsForm open={isOpenForm} close={closeForm} idUpdate = {idUpdate} dataUpdate = {dataUpdate}/>
+            <UpdateParkingLotsForm open={isOpenForm} close={closeForm} parkingLot={updateParkingLot} onUpdateParkingLot={onUpdateParkingLot}/>
             
         </TableContainer>
     );

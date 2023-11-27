@@ -4,16 +4,15 @@ import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import Cookies from 'js-cookie';
 
-export default function CreateParkingLots() {
+export default function CreateParkingLots({ onAddParkingLot, initLongitude, initLatitude }) {
     const [name, setName] = useState();
-    const [longitude, setLongitude] = useState();
-    const [latitude, setLatitude] = useState();
-    const [carSlot, setCarSlot] = useState();
-    const [motorbikeSlot, setMotorBikeSlot] = useState();
-    const [bicycleSlot, setBicyleSlot] = useState();
+    const [longitude, setLongitude] = useState(initLongitude);
+    const [latitude, setLatitude] = useState(initLatitude);
+    const [carSlot, setCarSlot] = useState(0);
+    const [motorbikeSlot, setMotorBikeSlot] = useState(0);
+    const [bicycleSlot, setBicyleSlot] = useState(0);
 
     const changeName = (event) => {
-        console.log(event.target.value);
         setName(event.target.value);
     }
 
@@ -63,6 +62,7 @@ export default function CreateParkingLots() {
         fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/`, requestOptions)
             .then((response) => {
                 console.log('Response:', response);
+                onAddParkingLot();
             });
     }
 
@@ -77,12 +77,12 @@ export default function CreateParkingLots() {
                 noValidate
                 autoComplete="off"
             >
-                <TextField id="standard-basic" label="Tên bãi đỗ xe" variant="standard" onChange={changeName}/>
-                <TextField id="standard-basic" label="Longitude" variant="standard" onChange={changeLongitude}/>
-                <TextField id="standard-basic" label="Latitude" variant="standard" onChange={changeLatitude}/>
-                <TextField id="standard-basic" label="Slot trống ô tô" variant="standard" onChange={changeCarSlot}/>
-                <TextField id="standard-basic" label="Slot trống xe máy" variant="standard" onChange={changeMotorbikeSlot}/>
-                <TextField id="standard-basic" label="Slot trống xe đạp" variant="standard" onChange={changeBicycleSlot}/>
+                <TextField id="name" label="Tên bãi đỗ xe" onChange={changeName}/>
+                <TextField id="longitude" label="Longitude" defaultValue={initLatitude} onChange={changeLongitude}/>
+                <TextField id="latitude" label="Latitude" defaultValue={initLatitude} onChange={changeLatitude}/>
+                <TextField id="carSlot" label="Slot trống ô tô" defaultValue="0" onChange={changeCarSlot}/>
+                <TextField id="motorbikeSlot" label="Slot trống xe máy" defaultValue="0" onChange={changeMotorbikeSlot}/>
+                <TextField id="bicycleSlot" label="Slot trống xe đạp" defaultValue="0" onChange={changeBicycleSlot}/>
                 <Button variant="contained" onClick={registerParkingLot}>
                     Register
                 </Button>
