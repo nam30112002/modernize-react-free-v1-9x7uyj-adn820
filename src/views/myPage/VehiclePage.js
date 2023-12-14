@@ -1,21 +1,18 @@
 import React from 'react';
-import { Typography } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
-import TableMyVehicle from './vehiclePageComponent/TableMyVehicle';
-import AddVehicle from './vehiclePageComponent/AddVehicle';
+import VehicleParents from './vehiclePageComponent/VehicleParents';
 
-
-const SamplePage = () => {
+const VehiclePage = () => {
+  
   return (
     <PageContainer title="Vehicle Page" description="this is Vehicle page">
 
       <DashboardCard title="My Vehicle Page">
-        <AddVehicle/>
-        <TableMyVehicle/>
+        <VehicleParents></VehicleParents>
       </DashboardCard>
     </PageContainer>
   );
 };
 
-export default SamplePage;
+export default VehiclePage;

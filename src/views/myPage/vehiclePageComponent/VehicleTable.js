@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,8 +8,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import TableHead from '@mui/material/TableHead';
-import { useState, useEffect } from "react";
-import Cookies from 'js-cookie';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -20,87 +18,32 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function TableMyVehicle() {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [rows, setRows] = useState([]);
-    const [numberOfTotalRow, setNumberOfTotalRow] = useState(0);
-    const [numberOfTotalPage, setNumberOfTotalPage] = useState(0);
-    const [timeLoad, setTimeLoad] = useState(1);
-    //Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0;
+export default function VehicleTable({ 
+    page, 
+    rowsPerPage, 
+    rows,
+    handleChangeRowsPerPage,
+    moveFirstPage,
+    moveLastPage,
+    moveBeforePage,
+    moveNextPage,
+    deleteVehicles,
+}) {
+    const [isOpenForm, setIsOpenForm] = useState(false);
+    const [updateParkingLot, setUpdateParkingLot] = useState(undefined);
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(event.target.value);
-        setPage(0);
-    };
+    const emptyRows = page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0;
 
-    const moveFirstPage = () => {
-        setPage(0);
-        setTimeLoad(timeLoad+1);
+
+    const closeForm = () => {
+        setIsOpenForm(false);
+        setUpdateParkingLot(undefined);
     }
 
-    const moveLastPage = () => {
-        setPage(numberOfTotalPage-1);
-        setTimeLoad(timeLoad+1);
+    const openForm = (row) => {
+        setUpdateParkingLot(row);
+        setIsOpenForm(true);
     }
-
-    const moveBeforePage = () => {
-        setPage(Math.max(page-1,0));
-        setTimeLoad(timeLoad+1);
-    }
-
-    const moveNextPage = () => {
-        let x = Math.min(page+1,numberOfTotalPage-1);
-        console.log(x);
-        setPage(x);
-        setTimeLoad(timeLoad+1);
-    }
-
-    useEffect(() => {
-        let accessToken = Cookies.get('accessToken');
-        var myHeaders = new Headers();
-        myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                try {
-                    console.log(result);
-                    setRows(result.items);
-                    setNumberOfTotalPage(result.pages);
-                    setNumberOfTotalRow(result.total);
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            })
-            .catch(error => console.log('error', error));
-    }, [timeLoad, page, rowsPerPage]);
-
-
-    const deleteVehicle = (id) => {
-        let accessToken = Cookies.get('accessToken');
-        var myHeaders = new Headers();
-        myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        var requestOptions = {
-            method: 'DELETE',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/` + id, requestOptions)
-            .then((response) => {
-                console.log('Response:', response);
-                setTimeLoad(timeLoad+1);
-            });
-    }
-
 
     return (
         <TableContainer component={Paper}>
@@ -125,7 +68,7 @@ export default function TableMyVehicle() {
                                 {row.vehicle_type}
                             </TableCell>
                             <TableCell>
-                                <IconButton onClick={() => deleteVehicle(row.id)}>
+                                <IconButton onClick={() => deleteVehicles(row.id)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </TableCell>
@@ -172,6 +115,7 @@ export default function TableMyVehicle() {
                     </TableRow>
                 </TableFooter>
             </Table>
+            
         </TableContainer>
     );
 }

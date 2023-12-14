@@ -4,12 +4,11 @@ import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import Cookies from 'js-cookie';
 
-export default function AddVehicle() {
-    const [licensePlate, setLicensePlate] = useState("");
-    const [vehicleType, setVehicleType] = useState("");
+export default function CreateVehicle({ onAddVehicle}) {
+    const [licensePlate, setLicensePlate] = useState();
+    const [vehicleType, setVehicleType] = useState(0);
 
     const changeLicensePlate = (event) => {
-        console.log(event.target.value);
         setLicensePlate(event.target.value);
     }
 
@@ -20,9 +19,9 @@ export default function AddVehicle() {
     const registerVehicle = () => {
         let accessToken = Cookies.get('accessToken');
         let data = JSON.stringify({
-            "license_plate" : licensePlate,
-            "vehicle_type" : vehicleType
-        });
+            "license_plate": licensePlate,
+            "vehicle_type": vehicleType
+          });
         console.log(data);
         var myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
@@ -37,6 +36,7 @@ export default function AddVehicle() {
         fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/`, requestOptions)
             .then((response) => {
                 console.log('Response:', response);
+                onAddVehicle();
             });
     }
 
@@ -51,8 +51,8 @@ export default function AddVehicle() {
                 noValidate
                 autoComplete="off"
             >
-                <TextField id="standard-basic" label="Biển số xe" variant="standard" onChange={changeLicensePlate}/>
-                <TextField id="standard-basic" label="Loại xe" variant="standard" onChange={changeVehicleType}/>
+                <TextField id="name" label="Biển số xe" onChange={changeLicensePlate}/>
+                <TextField id="longitude" label="Loại xe" onChange={changeVehicleType}/>
                 <Button variant="contained" onClick={registerVehicle}>
                     Register
                 </Button>
@@ -60,3 +60,4 @@ export default function AddVehicle() {
         </>
     )
 }
+
