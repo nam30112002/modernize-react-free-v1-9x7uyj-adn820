@@ -62,26 +62,41 @@ export default function ParkingLotsParent() {
 
     const getParkingLots = () => {
         let accessToken = Cookies.get('accessToken');
-        var myHeaders = new Headers();
+        const myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        var requestOptions = {
+        const requestOptions = {
             method: 'GET',
             headers: myHeaders,
             redirect: 'follow'
         };
 
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                try {
-                    console.log(result);
-                    setRows(result.items);
-                    setNumberOfTotalPage(result.pages);
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            })
-            .catch(error => console.log('error', error));
+        if(Cookies.get('role') === 'admin'){
+            fetch(`${process.env.REACT_APP_BACKEND_URI}/admin/parking_lots/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    try {
+                        console.log(result);
+                        setRows(result.items);
+                        setNumberOfTotalPage(result.pages);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                })
+                .catch(error => console.log('error', error));
+        }else {
+            fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/?page=${page + 1}&size=${rowsPerPage}&ownerId=${Cookies.get('userId')}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    try {
+                        console.log(result);
+                        setRows(result.items);
+                        setNumberOfTotalPage(result.pages);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                })
+                .catch(error => console.log('error', error));
+        }
     }
 
     useEffect(() => {
@@ -126,3 +141,12 @@ export default function ParkingLotsParent() {
         </>
     )
 }
+
+
+/*
+* {
+      "name": "parking-lot1",
+      "longitude": 0,
+      "latitude": 0,
+      "id": 1
+    }*/

@@ -25,13 +25,14 @@ const UserChart = Loadable(lazy(() => import('../views/myPage/homePageComponent/
 const VehicleChart = Loadable(lazy(() => import('../views/myPage/homePageComponent/VehicleChart')));
 const ParkingLotChart = Loadable(lazy(() => import('../views/myPage/homePageComponent/ParkingLotChart')));
 const Notification = Loadable(lazy(() => import('../socket/Notification')));
+const HomePage = Loadable(lazy(() => import('../views/myPage/HomePage')));
 
 const Router = [
     {
         path: '/',
         element: <FullLayout/>,
         children: [
-            {path: '/', element: <Navigate to="/dashboard"/>},
+            {path: '/', element: <Navigate to="/homePage"/>},
             {path: '/dashboard', exact: true, element: <Dashboard/>},
             {path: '/sample-page', exact: true, element: <SamplePage/>},
             {path: '/icons', exact: true, element: <Icons/>},
@@ -46,6 +47,7 @@ const Router = [
             {path: '/vehicleChart', exact: true, element: <VehicleChart/>},
             {path: '/parkingLotChart', exact: true, element: <ParkingLotChart/>},
             {path: '/notification', exact: true, element: <Notification/>},
+            {path: '/homePage', exact: true, element: <HomePage/>},
             {path: '*', element: <Navigate to="/auth/404"/>},
         ],
     },

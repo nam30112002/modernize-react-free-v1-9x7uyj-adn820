@@ -33,26 +33,58 @@ export default function VehicleParents() {
 
     const getVehicles = () => {
         let accessToken = Cookies.get('accessToken');
-        var myHeaders = new Headers();
+        const myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        var requestOptions = {
+        const requestOptions = {
             method: 'GET',
             headers: myHeaders,
             redirect: 'follow'
         };
+        const role = Cookies.get('role');
 
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                try {
-                    console.log(result);
-                    setRows(result.items);
-                    setNumberOfTotalPage(result.pages);
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            })
-            .catch(error => console.log('error', error));
+        /*
+        * {
+            "license_plate": "62YDYESR",
+            "vehicle_type": "car",
+            "id": 1,
+            "created_at": "2024-01-04T10:44:11.525389",
+            "updated_at": null,
+            "is_tracked": false,
+            "owner": {
+                "id": 3,
+                "username": "user2",
+                "is_active": true
+            }
+        }*/
+
+        if(role === 'admin') {
+            fetch(`${process.env.REACT_APP_BACKEND_URI}/admin/vehicles/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    try {
+                        console.log(result);
+                        setRows(result.items);
+                        setNumberOfTotalPage(result.pages);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                })
+                .catch(error => console.log('error', error));
+        }
+        else{
+            fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    try {
+                        console.log(result);
+                        setRows(result.items);
+                        setNumberOfTotalPage(result.pages);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                })
+                .catch(error => console.log('error', error));
+        }
     }
 
     useEffect(() => {
@@ -61,9 +93,9 @@ export default function VehicleParents() {
 
     const deleteVehicles = (id) => {
         let accessToken = Cookies.get('accessToken');
-        var myHeaders = new Headers();
+        const myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        var requestOptions = {
+        const requestOptions = {
             method: 'DELETE',
             headers: myHeaders,
             redirect: 'follow'

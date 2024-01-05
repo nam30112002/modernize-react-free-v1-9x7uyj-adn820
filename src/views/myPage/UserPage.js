@@ -11,8 +11,7 @@ const UserPage = () => {
 
   return (
     <PageContainer title="User Page" description="this is user page">
-      <DashboardCard title="User Page">
-        <Typography>This is a user page</Typography>
+      <DashboardCard>
         <CheckAdmin />
         <TableListUser />
       </DashboardCard>
