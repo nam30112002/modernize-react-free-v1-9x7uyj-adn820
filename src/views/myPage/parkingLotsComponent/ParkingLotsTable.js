@@ -20,6 +20,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import BuildIcon from '@mui/icons-material/Build';
 import UpdateParkingLotsForm from './UpdateParkingLotsForm';
 import Cookies from "js-cookie";
+import InfoIcon from '@mui/icons-material/Info';
+import ParkingLotDetail from "./ParkingLotDetail";
 
 export default function ParkingLotsTable({
                                              page,
@@ -34,7 +36,10 @@ export default function ParkingLotsTable({
                                              onUpdateParkingLot
                                          }) {
     const [isOpenForm, setIsOpenForm] = useState(false);
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
     const [updateParkingLot, setUpdateParkingLot] = useState(undefined);
+    const [targetParkingLot, setTargetParkingLot] = useState(undefined);
+    const [detailParkingLot, setDetailParkingLot] = useState(undefined);
     const [role, setRole] = useState('');
 
     const emptyRows = page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0;
@@ -49,6 +54,29 @@ export default function ParkingLotsTable({
         setUpdateParkingLot(row);
         setIsOpenForm(true);
     }
+
+    const closeDetail = () => {
+        setIsOpenDetail(false);
+        setTargetParkingLot(undefined);
+    }
+
+    const openDetail = async (row) => {
+        setTargetParkingLot(row);
+        const requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        await fetch('http://127.0.0.1:8001/parking_lots?parking_lot_id=' + row.id, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                setDetailParkingLot(result);
+            })
+            .catch(error => console.log('error', error));
+        setIsOpenDetail(true);
+    }
+
     useEffect(() => {
         const role = Cookies.get('role');
         setRole(role);
@@ -167,6 +195,11 @@ export default function ParkingLotsTable({
                                             <BuildIcon/>
                                         </IconButton>
                                     </TableCell>
+                                    <TableCell>
+                                        <IconButton onClick={() => openDetail(row)}>
+                                            <InfoIcon/>
+                                        </IconButton>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                             {emptyRows > 0 && (
@@ -210,8 +243,8 @@ export default function ParkingLotsTable({
                             </TableRow>
                         </TableFooter>
                     </Table>
-                    <UpdateParkingLotsForm open={isOpenForm} close={closeForm} parkingLot={updateParkingLot}
-                                           onUpdateParkingLot={onUpdateParkingLot}/>
+                    <UpdateParkingLotsForm open={isOpenForm} close={closeForm} parkingLot={updateParkingLot} onUpdateParkingLot={onUpdateParkingLot}/>
+                    <ParkingLotDetail open={isOpenDetail} close={closeDetail} parkingLot={targetParkingLot} detail={detailParkingLot}/>
                 </TableContainer>
             }
         </>

@@ -17,10 +17,7 @@ export default function UpdateParkingLotsForm({
     const [name, setName] = useState(parkingLot?.name);
     const [longitude, setLongitude] = useState(parkingLot?.longitude);
     const [latitude, setLatitude] = useState(parkingLot?.latitude);
-    const [carSlot, setCarSlot] = useState(parkingLot?.available_spaces.car);
-    const [motorbikeSlot, setMotorBikeSlot] = useState(parkingLot?.available_spaces.motorbike);
-    const [bicycleSlot, setBicyleSlot] = useState(parkingLot?.available_spaces.bicycle);
-    
+
     const changeName = (event) => {
         console.log(event.target.value);
         setName(event.target.value);
@@ -34,35 +31,17 @@ export default function UpdateParkingLotsForm({
         setLatitude(event.target.value);
     }
 
-    const changeCarSlot = (event) => {
-        setCarSlot(event.target.value);
-    }
-
-    const changeMotorbikeSlot = (event) => {
-        setMotorBikeSlot(event.target.value);
-    }
-
-    const changeBicycleSlot = (event) => {
-        setBicyleSlot(event.target.value);
-    }
-
-
     const updateParkingLot = () => {
         let accessToken = Cookies.get('accessToken');
         let data = JSON.stringify({
             "name": name,
             "longitude": longitude,
-            "latitude": latitude,
-            "available_spaces": {
-              "car": carSlot,
-              "motorbike": motorbikeSlot,
-              "bicycle": bicycleSlot
-            }
+            "latitude": latitude
         });
-        var myHeaders = new Headers();
+        const myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
         myHeaders.append("Content-Type", "application/json");
-        var requestOptions = {
+        const requestOptions = {
             method: 'PUT',
             headers: myHeaders,
             body: data,
@@ -88,9 +67,6 @@ export default function UpdateParkingLotsForm({
                 <TextField autoFocus margin="dense" id="name" label="Name" fullWidth defaultValue={parkingLot?.name} onChange={changeName}/>
                 <TextField margin="dense" id="longitude" label="Longitude" fullWidth defaultValue={parkingLot?.longitude} onChange={changeLongitude}/>
                 <TextField margin="dense" id="latitude" label="Latitude" fullWidth  defaultValue={parkingLot?.latitude} onChange={changeLatitude}/>
-                <TextField margin="dense" id="carSlot" label="Slot trống ô tô" fullWidth defaultValue={parkingLot?.available_spaces?.car} onChange={changeCarSlot}/>
-                <TextField margin="dense" id="motorbikeSlot" label="Slot trống xe máy" fullWidth defaultValue={parkingLot?.available_spaces?.motorbike} onChange={changeMotorbikeSlot}/>
-                <TextField margin="dense" id="bicycleSlot" label="Slot trống xe đạp" fullWidth defaultValue={parkingLot?.available_spaces?.bicycle} onChange={changeBicycleSlot}/>
             </DialogContent>
             <DialogActions>
                 <Button onClick={updateParkingLot}>Save</Button>

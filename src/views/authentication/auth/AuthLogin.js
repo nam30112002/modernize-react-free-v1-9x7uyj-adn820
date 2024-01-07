@@ -56,7 +56,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             .then(() => console.log(typeof dataAfterLogin))
             .then(() => {
                 if (typeof dataAfterLogin != 'undefined') {
-                    navigate('/dashboard');
+                    navigate('/homePage');
                     Cookies.set("username", username, { expires: 7 }); //Cookie sẽ hết hạn sau 7 ngày
                 }
             })

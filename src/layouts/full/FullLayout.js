@@ -6,6 +6,7 @@ import Header from './header/Header';
 import Sidebar from './sidebar/Sidebar';
 import CheckAdmin from "src/views/myPage/userPageComponent/CheckAdmin";
 import Notification from "../../socket/Notification";
+import KafkaConsumerComponent from "../../kafka/KafkaConsumerComponent";
 
 const MainWrapper = styled('div')(() => ({
     display: 'flex',
@@ -64,7 +65,8 @@ const FullLayout = () => {
                     <Box sx={{minHeight: 'calc(100vh - 170px)'}}>
                         <Outlet/>
                     </Box>
-                    <Notification/>
+                    {/*<KafkaConsumerComponent/>*/}
+                    {/*<Notification/>*/}
                     {/* ------------------------------------------- */}
                     {/* Notification */}
                     {/* ------------------------------------------- */}

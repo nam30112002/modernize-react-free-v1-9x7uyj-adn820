@@ -2,25 +2,29 @@ import * as React from 'react';
 import {useState} from 'react';
 import {Typography} from "@mui/material";
 import {PieChart} from "@mui/x-charts/PieChart";
+import {de} from "@faker-js/faker";
 
 
 //thong ke chi tiet 1 parking lot
-export default function ParkingLotChart() {
-    const [parkingLot, setParkingLot] = useState({
-        name : 'bai do xe 1',
-        carSlot : 10,
-        motorbikeSlot : 20,
-        bikeSlot : 30,
-        parkedCar : 5,
-        parkedMotorbike : 10,
-        parkedBike : 15,
-        bookedCar : 2,
-        bookedMotorbike : 3,
-        bookedBike : 4,
-        emptyCar : 3,
-        emptyMotorbike : 7,
-        emptyBike : 11
-    });
+export default function ParkingLotChart({detailParkingLot}) {
+    // {
+    //     "car": {
+    //     "free": 73,
+    //         "occupied": 0,
+    //         "reserved": 0
+    // },
+    //     "motorbike": {
+    //     "free": 69,
+    //         "occupied": 0,
+    //         "reserved": 0
+    // },
+    //     "truck": {
+    //     "free": 68,
+    //         "occupied": 0,
+    //         "reserved": 0
+    // }
+    // }
+    console.log(detailParkingLot)
     return (
         <>
             <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
@@ -32,31 +36,31 @@ export default function ParkingLotChart() {
                         innerRadius: 0,
                         outerRadius: 80,
                         data: [
-                            { label: 'Car Slot', value: parkingLot.carSlot },
-                            { label: 'Motorbike Slot', value: parkingLot.motorbikeSlot },
-                            { label: 'Bike Slot', value: parkingLot.bikeSlot },
+                            { label: 'Total car slot', value: detailParkingLot.car.free + detailParkingLot.car.occupied + detailParkingLot.car.reserved },
+                            { label: 'Total motorbike slot', value: detailParkingLot.motorbike.free + detailParkingLot.motorbike.occupied + detailParkingLot.motorbike.reserved },
+                            { label: 'Total truck slot', value: detailParkingLot.truck.free + detailParkingLot.truck.occupied + detailParkingLot.truck.reserved }
                         ]
                     },
                     {
                         innerRadius: 80,
                         outerRadius: 120,
                         data: [
-                            { label: 'Parked Car', value: parkingLot.parkedCar },
-                            { label: 'Booked Car', value: parkingLot.bookedCar },
-                            { label: 'Empty Car', value: parkingLot.emptyCar },
-                            { label: 'Parked Motorbike', value: parkingLot.parkedMotorbike },
-                            { label: 'Booked Motorbike', value: parkingLot.bookedMotorbike },
-                            { label: 'Empty Motorbike', value: parkingLot.emptyMotorbike },
-                            { label: 'Parked Bike', value: parkingLot.parkedBike },
-                            { label: 'Booked Bike', value: parkingLot.bookedBike },
-                            { label: 'Empty Bike', value: parkingLot.emptyBike}
+                            { label: 'Free car slot', value: detailParkingLot.car.free },
+                            { label: 'Occupied car slot', value: detailParkingLot.car.occupied },
+                            { label: 'Reserved car slot', value: detailParkingLot.car.reserved },
+                            { label: 'Free motorbike slot', value: detailParkingLot.motorbike.free },
+                            { label: 'Occupied motorbike slot', value: detailParkingLot.motorbike.occupied },
+                            { label: 'Reserved motorbike slot', value: detailParkingLot.motorbike.reserved },
+                            { label: 'Free truck slot', value: detailParkingLot.truck.free },
+                            { label: 'Occupied truck slot', value: detailParkingLot.truck.occupied },
+                            { label: 'Reserved truck slot', value: detailParkingLot.truck.reserved }
                         ],
                     },
                 ]}
-                width={400}
-                height={300}
+                width={800}
+                height={600}
                 slotProps={{
-                    legend: { hidden: true },
+                    legend: { direction: 'row', position: { vertical: 'top', horizontal: 'middle' }, padding: 0},
                 }}
             />
         </>

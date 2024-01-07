@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import CreateVehicle from "./CreateVehicle";
 import VehicleTable from "./VehicleTable";
 import Cookies from 'js-cookie';
+import VehicleOnDate from './VehicleOnDate';
 
 export default function VehicleParents() {
     const [page, setPage] = useState(0);
@@ -114,6 +115,7 @@ export default function VehicleParents() {
     return (
         <>
             <CreateVehicle onAddVehicle={getVehicles}/>
+            <VehicleOnDate/>
             <VehicleTable
                 page={page} 
                 rowsPerPage={rowsPerPage}

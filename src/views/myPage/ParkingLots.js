@@ -8,7 +8,6 @@ import ParkingLotsParent from "./parkingLotsComponent/ParkingLotsParent";
 const ParkingLots = () => {
   return (
     <PageContainer title="Sample Page">
-
       <DashboardCard title="Parking Lot">
           <ParkingLotsParent/>
       </DashboardCard>

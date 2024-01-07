@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import Cookies from 'js-cookie';
+import {sendNotificationToAdmin} from "../../../kafka/SendNotificationToAdmin";
 
 export default function CreateVehicle({ onAddVehicle}) {
     const [licensePlate, setLicensePlate] = useState();
@@ -16,28 +17,29 @@ export default function CreateVehicle({ onAddVehicle}) {
         setVehicleType(event.target.value);
     }
 
-    const registerVehicle = () => {
+    const registerVehicle = async () => {
         let accessToken = Cookies.get('accessToken');
         let data = JSON.stringify({
             "license_plate": licensePlate,
             "vehicle_type": vehicleType
           });
         console.log(data);
-        var myHeaders = new Headers();
+        const myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
         myHeaders.append("Content-Type", "application/json");
-        var requestOptions = {
+        const requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: data,
             redirect: 'follow'
         };
 
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/`, requestOptions)
+        await fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/`, requestOptions)
             .then((response) => {
                 console.log('Response:', response);
                 onAddVehicle();
             });
+        //await sendNotificationToAdmin(`New vehicle with license plate ${licensePlate} has been registered`);
     }
 
     return (
