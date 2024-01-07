@@ -10,9 +10,9 @@ export default function ProfileTable() {
     useEffect(() => {
         const toDo = async () => {
             let accessToken = Cookies.get('accessToken');
-            var myHeaders = new Headers();
+            const myHeaders = new Headers();
             myHeaders.append('Authorization', 'Bearer ' + accessToken);
-            var requestOptions = {
+            const requestOptions = {
                 method: 'GET',
                 headers: myHeaders,
                 redirect: 'follow'

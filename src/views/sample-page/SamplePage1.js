@@ -12,6 +12,7 @@ const SamplePage = () => {
 
       <DashboardCard title="Sample Page">
         <Typography>This is a sample page</Typography>
+          <NoName/>
       </DashboardCard>
     </PageContainer>
   );

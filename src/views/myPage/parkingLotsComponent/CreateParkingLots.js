@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { Button } from '@mui/material';
+import {Button} from '@mui/material';
 import Cookies from 'js-cookie';
 
-export default function CreateParkingLots({ onAddParkingLot, initLongitude, initLatitude }) {
+export default function CreateParkingLots({onAddParkingLot, initLongitude, initLatitude}) {
     const [name, setName] = useState();
     const [longitude, setLongitude] = useState(initLongitude);
     const [latitude, setLatitude] = useState(initLatitude);
     const [carSlot, setCarSlot] = useState(0);
     const [motorbikeSlot, setMotorBikeSlot] = useState(0);
     const [bicycleSlot, setBicyleSlot] = useState(0);
+    const [role, setRole] = useState('');
 
     const changeName = (event) => {
         setName(event.target.value);
@@ -43,11 +44,11 @@ export default function CreateParkingLots({ onAddParkingLot, initLongitude, init
             "longitude": longitude,
             "latitude": latitude,
             "available_spaces": {
-              "car": carSlot,
-              "motorbike": motorbikeSlot,
-              "bicycle": bicycleSlot
+                "car": carSlot,
+                "motorbike": motorbikeSlot,
+                "bicycle": bicycleSlot
             }
-          });
+        });
         console.log(data);
         var myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
@@ -65,28 +66,32 @@ export default function CreateParkingLots({ onAddParkingLot, initLongitude, init
                 onAddParkingLot();
             });
     }
+    useEffect(() => {
+        let role = Cookies.get('role');
+        setRole(role);
+    }, []);
 
     return (
         <>
-            <div>Enter vehicle information you want to register</div>
-            <Box
-                component="form"
-                sx={{
-                    '& > :not(style)': { m: 1, width: '20ch' },
-                }}
-                noValidate
-                autoComplete="off"
-            >
-                <TextField id="name" label="Tên bãi đỗ xe" onChange={changeName}/>
-                <TextField id="longitude" label="Longitude" defaultValue={initLatitude} onChange={changeLongitude}/>
-                <TextField id="latitude" label="Latitude" defaultValue={initLatitude} onChange={changeLatitude}/>
-                <TextField id="carSlot" label="Slot trống ô tô" defaultValue="0" onChange={changeCarSlot}/>
-                <TextField id="motorbikeSlot" label="Slot trống xe máy" defaultValue="0" onChange={changeMotorbikeSlot}/>
-                <TextField id="bicycleSlot" label="Slot trống xe đạp" defaultValue="0" onChange={changeBicycleSlot}/>
-                <Button variant="contained" onClick={registerParkingLot}>
-                    Register
-                </Button>
-            </Box>
+            {(role === 'admin') && <>
+                <div>Enter vehicle information you want to register</div>
+                <Box
+                    component="form"
+                    sx={{
+                        '& > :not(style)': {m: 1, width: '20ch'},
+                    }}
+                    noValidate
+                    autoComplete="off"
+                >
+                    <TextField id="name" label="Tên bãi đỗ xe" onChange={changeName}/>
+                    <TextField id="longitude" label="Longitude" defaultValue={initLatitude} onChange={changeLongitude}/>
+                    <TextField id="latitude" label="Latitude" defaultValue={initLatitude} onChange={changeLatitude}/>
+                    <Button variant="contained" onClick={registerParkingLot}>
+                        Register
+                    </Button>
+                </Box>
+            </>
+            }
         </>
     )
 }

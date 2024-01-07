@@ -28,6 +28,8 @@ const Profile = () => {
 
   const logOut = () => {
     Cookies.remove('accessToken');
+    Cookies.remove('role');
+    Cookies.remove('username');
     navigate('/auth/login');
   };
 

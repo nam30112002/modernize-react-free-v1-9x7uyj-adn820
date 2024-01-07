@@ -22,10 +22,11 @@ export default function CheckAdmin() {
         if (response.ok) {
           dispatch(confirmAdmin());
           console.log('Người dùng là admin');
-          
+          Cookies.set('role', 'admin', { expires: 1 });
         } else {
           dispatch(confirmNotAdmin());
           console.log('Người dùng không là admin');
+          Cookies.set('role', 'user', { expires: 1 });
           throw new Error('Lỗi khi kiểm tra quyền admin');
         }
       } catch (error) {
