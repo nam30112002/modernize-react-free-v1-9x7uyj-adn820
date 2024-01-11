@@ -1,42 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
-import CreateParkingLots from "./CreateParkingLots";
-import ParkingLotsTable from "./ParkingLotsTable";
+import CreateVehicle from "./CreateVehicle";
+import VehicleTable from "./VehicleTable";
 import Cookies from 'js-cookie';
+import VehicleOnDate from './VehicleOnDate';
 
-export default function ParkingLotsParent() {
+export default function VehicleParents() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [numberOfTotalPage, setNumberOfTotalPage] = useState(0);
     const [rows, setRows] = useState([]);
-    const [longitude, setLongitude] = useState(0);
-    const [latitude, setLatitude] = useState(0);
-
-    useEffect(() => {
-        if ("geolocation" in navigator) {
-            // Request the current position
-            navigator.geolocation.getCurrentPosition(function(position) {
-                setLatitude(position.coords.latitude);
-                setLongitude(position.coords.longitude);
-            }, (error) => {
-              switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    console.log("User denied the request for Geolocation.");
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    console.log("Location information is unavailable.");
-                    break;
-                case error.TIMEOUT:
-                    console.log("The request to get user location timed out.");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    console.log("An unknown error occurred.");
-                    break;
-                }
-            });
-          } else {
-            console.log("Geolocation is not supported by this browser.");
-          }
-    }, []);
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(event.target.value);
@@ -60,7 +32,7 @@ export default function ParkingLotsParent() {
         setPage(x);
     }
 
-    const getParkingLots = () => {
+    const getVehicles = () => {
         let accessToken = Cookies.get('accessToken');
         const myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
@@ -69,9 +41,25 @@ export default function ParkingLotsParent() {
             headers: myHeaders,
             redirect: 'follow'
         };
+        const role = Cookies.get('role');
 
-        if(Cookies.get('role') === 'admin'){
-            fetch(`${process.env.REACT_APP_BACKEND_URI}/admin/parking_lots/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
+        /*
+        * {
+            "license_plate": "62YDYESR",
+            "vehicle_type": "car",
+            "id": 1,
+            "created_at": "2024-01-04T10:44:11.525389",
+            "updated_at": null,
+            "is_tracked": false,
+            "owner": {
+                "id": 3,
+                "username": "user2",
+                "is_active": true
+            }
+        }*/
+
+        if(role === 'admin') {
+            fetch(`${process.env.REACT_APP_BACKEND_URI}/admin/vehicles/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     try {
@@ -83,8 +71,9 @@ export default function ParkingLotsParent() {
                     }
                 })
                 .catch(error => console.log('error', error));
-        }else {
-            fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/?page=${page + 1}&size=${rowsPerPage}&ownerId=${Cookies.get('userId')}`, requestOptions)
+        }
+        else{
+            fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/?page=${page + 1}&size=${rowsPerPage}`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     try {
@@ -100,33 +89,33 @@ export default function ParkingLotsParent() {
     }
 
     useEffect(() => {
-        getParkingLots();
+        getVehicles();
     }, [page, rowsPerPage]);
 
-    const deleteParkingLots = (id) => {
+    const deleteVehicles = (id) => {
         let accessToken = Cookies.get('accessToken');
-        var myHeaders = new Headers();
+        const myHeaders = new Headers();
         myHeaders.append('Authorization', 'Bearer ' + accessToken);
-        var requestOptions = {
+        const requestOptions = {
             method: 'DELETE',
             headers: myHeaders,
             redirect: 'follow'
         };
 
-        fetch(`${process.env.REACT_APP_BACKEND_URI}/parking-lots/` + id, requestOptions)
+        fetch(`${process.env.REACT_APP_BACKEND_URI}/vehicles/` + id, requestOptions)
             .then((response) => {
                 if (response.status !== 204) {
                     console.log(`Looks like there was a problem. Status Code: ${response.status}`);
                 }
-                getParkingLots();
+                getVehicles();
             })
             .catch(error => console.log('error', error));
     }
 
     return (
         <>
-            <CreateParkingLots onAddParkingLot={getParkingLots} initLongitude={longitude} initLatitude={latitude}/>
-            <ParkingLotsTable
+            <CreateVehicle onAddVehicle={getVehicles}/>
+            <VehicleTable
                 page={page} 
                 rowsPerPage={rowsPerPage}
                 rows={rows}
@@ -135,18 +124,9 @@ export default function ParkingLotsParent() {
                 moveLastPage={moveLastPage}
                 moveBeforePage={moveBeforePage}
                 moveNextPage={moveNextPage}
-                deleteParkingLots={deleteParkingLots}
-                onUpdateParkingLot={getParkingLots}
-            ></ParkingLotsTable>
+                deleteVehicles={deleteVehicles}
+                onUpdateVehicle={getVehicles}
+            ></VehicleTable>
         </>
     )
 }
-
-
-/*
-* {
-      "name": "parking-lot1",
-      "longitude": 0,
-      "latitude": 0,
-      "id": 1
-    }*/
