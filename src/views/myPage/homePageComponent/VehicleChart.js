@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Typography } from '@mui/material';
-import { useEffect } from 'react';
 
 //thong ke so luong xe theo tung ngay
 export default function VehicleChart({data,time}) {
     console.log(data)
+    console.log(time)
     return (
         <>
             <Typography variant="h6" gutterBottom component="div">
-                Thống kê số lượng xe theo ngày + {time}
+                Thống kê số lượng xe theo ngày {time}
             </Typography>
           {data && <LineChart
             width={500}

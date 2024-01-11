@@ -17,11 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import DeleteIcon from '@mui/icons-material/Delete';
-import BuildIcon from '@mui/icons-material/Build';
-import UpdateParkingLotsForm from './UpdateParkingLotsForm';
 import Cookies from "js-cookie";
-import InfoIcon from '@mui/icons-material/Info';
-import ParkingLotDetail from "./ParkingLotDetail";
 
 export default function ParkingSpaceTable({
     page,
@@ -32,7 +28,7 @@ export default function ParkingSpaceTable({
     moveLastPage,
     moveBeforePage,
     moveNextPage,
-    parkingSpace
+    deleteParkingSpace
 }) {
     const [role, setRole] = useState('');
 
@@ -51,10 +47,12 @@ export default function ParkingSpaceTable({
                         <TableHead>
                             <TableRow>
                                 <TableCell>STT</TableCell>
-                                <TableCell align="center">Tên bãi đỗ xe</TableCell>
                                 <TableCell align="center">Longitude</TableCell>
                                 <TableCell align="center">Latitude</TableCell>
-                                <TableCell align="center">Thời điểm tạo</TableCell>
+                                <TableCell align="center">Loại xe</TableCell>
+                                <TableCell align="center">Trạng thái</TableCell>
+                                <TableCell align="center">Xe ở trong</TableCell>
+                                <TableCell align="center">ID Bãi đỗ</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -64,30 +62,26 @@ export default function ParkingSpaceTable({
                                         {page * rowsPerPage + index + 1}
                                     </TableCell>
                                     <TableCell align="center">
-                                        {row.name}
-                                    </TableCell>
-                                    <TableCell align="center">
                                         {row.longitude}
                                     </TableCell>
                                     <TableCell align="center">
                                         {row.latitude}
                                     </TableCell>
                                     <TableCell align="center">
-                                        {row.created_at}
+                                        {row.vehicle_type}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {row.state}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {row.vehicle ? row.vehicle : ''}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {row.parking_lot_id}
                                     </TableCell>
                                     <TableCell>
-                                        <IconButton onClick={() => deleteParkingLots(row.id)}>
+                                        <IconButton onClick={() => deleteParkingSpace(row.id)}>
                                             <DeleteIcon/>
-                                        </IconButton>
-                                    </TableCell>
-                                    <TableCell>
-                                        <IconButton onClick={() => openForm(row)}>
-                                            <BuildIcon/>
-                                        </IconButton>
-                                    </TableCell>
-                                    <TableCell>
-                                        <IconButton onClick={() => openDetail(row)}>
-                                            <InfoIcon/>
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -133,10 +127,18 @@ export default function ParkingSpaceTable({
                             </TableRow>
                         </TableFooter>
                     </Table>
-                    <UpdateParkingLotsForm open={isOpenForm} close={closeForm} parkingLot={updateParkingLot} onUpdateParkingLot={onUpdateParkingLot}/>
-                    <ParkingLotDetail open={isOpenDetail} close={closeDetail} parkingLot={targetParkingLot} detail={detailParkingLot}/>
                 </TableContainer>
             }
         </>
     );
 }
+
+/*{
+      "longitude": 0,
+      "latitude": 100,
+      "parking_lot_id": 1,
+      "vehicle_type": "car",
+      "id": 1,
+      "state": "free",
+      "vehicle": null
+} */

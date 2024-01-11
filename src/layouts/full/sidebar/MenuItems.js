@@ -35,6 +35,12 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Parking Spaces',
+    icon: IconLayoutDashboard,
+    href: '/parkingSpace',
+  },
+  {
+    id: uniqueId(),
     title: 'My Profile',
     icon: IconLayoutDashboard,
     href: '/myProfile',

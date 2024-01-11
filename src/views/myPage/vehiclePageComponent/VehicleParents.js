@@ -115,7 +115,6 @@ export default function VehicleParents() {
     return (
         <>
             <CreateVehicle onAddVehicle={getVehicles}/>
-            <VehicleOnDate/>
             <VehicleTable
                 page={page} 
                 rowsPerPage={rowsPerPage}

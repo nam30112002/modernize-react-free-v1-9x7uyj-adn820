@@ -26,6 +26,7 @@ const VehicleChart = Loadable(lazy(() => import('../views/myPage/homePageCompone
 const ParkingLotChart = Loadable(lazy(() => import('../views/myPage/homePageComponent/ParkingLotChart')));
 const Notification = Loadable(lazy(() => import('../socket/Notification')));
 const HomePage = Loadable(lazy(() => import('../views/myPage/HomePage')));
+const ParkingSpaceParent = Loadable(lazy(() => import('../views/myPage/parkingSpaceComponent/ParkingSpaceParent')));
 
 const Router = [
     {
@@ -48,6 +49,7 @@ const Router = [
             {path: '/parkingLotChart', exact: true, element: <ParkingLotChart/>},
             {path: '/notification', exact: true, element: <Notification/>},
             {path: '/homePage', exact: true, element: <HomePage/>},
+            {path: '/parkingSpace', exact: true, element: <ParkingSpaceParent/>},
             {path: '*', element: <Navigate to="/auth/404"/>},
         ],
     },
